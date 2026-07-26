@@ -14,47 +14,41 @@ USDZ_DIR = "public/usdz"
 USD_TEMPLATE = """#usda 1.0
 (
     defaultPrim = "board"
-    upAxis = "Y"
     metersPerUnit = 1.0
+    upAxis = "Y"
 )
 
-def Xform "board" (
-    prepend references = @./texture.png@
-)
+def Xform "board"
 {
-    float3 xformOp:translate = (0, 0, 0)
-    uniform token[] xformOpOrder = ["xformOp:translate"]
-
     def Mesh "plane"
     {
         float3[] extent = [(-0.762, 0, -0.5588), (0.762, 0, 0.5588)]
         int[] faceVertexCounts = [4]
         int[] faceVertexIndices = [0, 1, 2, 3]
-        normal3f[] normals = [(0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0)]
+        normal3f[] normals = [(0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0)] (
+            interpolation = "vertex"
+        )
         point3f[] points = [(-0.762, 0, -0.5588), (0.762, 0, -0.5588), (0.762, 0, 0.5588), (-0.762, 0, 0.5588)]
-        texCoord2f[] primvars:st = [(0, 1), (1, 1), (1, 0), (0, 0)] (
+        texCoord2f[] primvars:st = [(0, 0), (1, 0), (1, 1), (0, 1)] (
             interpolation = "vertex"
         )
         int[] primvars:st:indices = [0, 1, 2, 3]
-        uniform token subdivisionScheme = "none"
 
-        rel material:binding = </board/mat>
+        rel material:binding = </board/material>
     }
 
-    def Material "mat"
+    def Material "material"
     {
-        token outputs:surface.connect = </board/mat/shader.outputs:surface>
+        token outputs:surface.connect = </board/material/surfaceShader.outputs:surface>
 
-        def Shader "shader"
+        def Shader "surfaceShader"
         {
             uniform token info:id = "UsdPreviewSurface"
-            color3f inputs:diffuseColor.connect = </board/mat/diffuseTex.outputs:rgb>
-            float inputs:metallic = 0
-            float inputs:roughness = 1
+            color3f inputs:diffuseColor.connect = </board/material/textureShader.outputs:rgb>
             token outputs:surface
         }
 
-        def Shader "diffuseTex"
+        def Shader "textureShader"
         {
             uniform token info:id = "UsdUVTexture"
             asset inputs:file = @texture.png@

@@ -4,9 +4,10 @@ export interface TerrainLayout {
   id: string;
   name: string;
   fd: ForceDisposition;
-  opponentFd?: ForceDisposition; // undefined for mirror matches
+  opponentFd?: ForceDisposition;
   layoutNumber: number;
   imagePath: string;
+  usdzPath: string;
 }
 
 export type ForceDisposition =

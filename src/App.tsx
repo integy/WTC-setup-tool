@@ -1,130 +1,20 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { startARSession } from './ar/ARSession';
-import { ARSceneRenderer } from './ar/ARScene';
+import { useState, useCallback } from 'react';
 import terrainLayouts from './data/terrain-layouts';
 import LayoutSelector from './components/LayoutSelector';
-import ARControls from './components/ARControls';
 import type { TerrainLayout } from './types';
-
-type AppState = 'landing' | 'ar-active' | 'error';
-
-function getDebugInfo(): string[] {
-  const info: string[] = [];
-  info.push(`navigator.xr: ${!!(navigator as any).xr}`);
-  info.push(`isSecureContext: ${window.isSecureContext}`);
-  info.push(`userAgent: ${navigator.userAgent.substring(0, 90)}`);
-  return info;
-}
+import { FD_SHORT } from './types';
+import type { ForceDisposition } from './types';
 
 export default function App() {
-  const [appState, setAppState] = useState<AppState>('landing');
   const [selectedLayout, setSelectedLayout] = useState<TerrainLayout>(terrainLayouts[0]);
-  const [errorMsg, setErrorMsg] = useState('');
   const [layoutIdx, setLayoutIdx] = useState(0);
-  const arRendererRef = useRef<ARSceneRenderer | null>(null);
-  const sessionRef = useRef<XRSession | null>(null);
-
-  const [debugInfo] = useState<string[]>(getDebugInfo);
-
-  const handleStartAR = useCallback(async () => {
-    setErrorMsg('');
-
-    // Create canvas for AR
-    const canvas = document.createElement('canvas');
-    canvas.id = 'ar-canvas';
-    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;';
-    document.body.appendChild(canvas);
-
-    try {
-      await startARSession(canvas, {
-        onSessionStarted: (session, gl) => {
-          sessionRef.current = session;
-
-          const renderer = new ARSceneRenderer(canvas, gl);
-          arRendererRef.current = renderer;
-
-          // Create board when session starts (will be positioned on hit)
-          const layout = terrainLayouts[layoutIdx];
-          renderer.createBoard(
-            layout.imagePath,
-            { x: 0, y: -1, z: -2 } // Default position, updated on hit test
-          );
-
-          session.requestAnimationFrame((_time, frame) => {
-            const refSpace = (session as any)._referenceSpace as XRReferenceSpace;
-            if (refSpace && renderer) {
-              renderer.render(frame, refSpace);
-            }
-          });
-
-          setAppState('ar-active');
-        },
-        onSessionEnded: () => {
-          canvas.remove();
-          arRendererRef.current = null;
-          sessionRef.current = null;
-          setAppState('landing');
-        },
-        onError: (err) => {
-          canvas.remove();
-          setErrorMsg(err.message);
-          setAppState('error');
-        },
-      });
-    } catch (err: any) {
-      canvas.remove();
-      setErrorMsg(err.message || 'Failed to start AR');
-      setAppState('error');
-    }
-  }, [layoutIdx]);
 
   const handleLayoutChange = useCallback((layout: TerrainLayout, idx: number) => {
     setSelectedLayout(layout);
     setLayoutIdx(idx);
-
-    // Update board texture if in AR
-    const renderer = arRendererRef.current;
-    if (renderer && appState === 'ar-active') {
-      renderer.removeBoard();
-      renderer.createBoard(layout.imagePath, { x: 0, y: -1, z: -2 });
-    }
-  }, [appState]);
-
-  const handleCycleLayout = useCallback((direction: 1 | -1) => {
-    const newIdx = (layoutIdx + direction + terrainLayouts.length) % terrainLayouts.length;
-    handleLayoutChange(terrainLayouts[newIdx], newIdx);
-  }, [layoutIdx, handleLayoutChange]);
-
-  const handleExitAR = useCallback(() => {
-    sessionRef.current?.end();
   }, []);
 
-  if (appState === 'error') {
-    return (
-      <div className="app">
-        <div className="error-screen">
-          <h1>⚠️ Error</h1>
-          <p>{errorMsg}</p>
-          <button onClick={() => setAppState('landing')}>Go Back</button>
-        </div>
-      </div>
-    );
-  }
-
-  if (appState === 'ar-active') {
-    return (
-      <div className="app">
-        <ARControls
-          layoutName={selectedLayout.name}
-          layoutIndex={layoutIdx}
-          totalLayouts={terrainLayouts.length}
-          onPrev={() => handleCycleLayout(-1)}
-          onNext={() => handleCycleLayout(1)}
-          onExit={handleExitAR}
-        />
-      </div>
-    );
-  }
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 
   return (
     <div className="app">
@@ -140,32 +30,44 @@ export default function App() {
           onSelect={handleLayoutChange}
         />
 
-        <button
+        {/* AR Quick Look button for iOS */}
+        <a
+          href={selectedLayout.usdzPath}
+          rel="ar"
           className="ar-start-btn"
-          onClick={handleStartAR}
+          style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}
         >
-          📷 Start AR
-        </button>
+          📷 View in AR
+        </a>
 
         <p style={{ textAlign: 'center', fontSize: 12, color: '#888', lineHeight: 1.5 }}>
-          Requires <strong>Safari on iPhone/iPad</strong>.<br />
-          Make sure <strong>WebXR</strong> is enabled in:<br />
-          Settings → Safari → Advanced → Feature Flags → WebXR
+          {isIOS ? (
+            <>Opens <strong>AR Quick Look</strong> — place the terrain board in your real space.</>
+          ) : (
+            <>Best experienced on <strong>iPhone/iPad Safari</strong> with AR Quick Look.</>
+          )}
         </p>
+
+        {/* Layout preview image */}
+        <div style={{ textAlign: 'center', marginTop: 8 }}>
+          <img
+            src={selectedLayout.imagePath}
+            alt={selectedLayout.name}
+            style={{
+              maxWidth: '100%',
+              maxHeight: 300,
+              borderRadius: 8,
+              border: '2px solid #333',
+            }}
+          />
+          <p style={{ fontSize: 11, color: '#666', marginTop: 4 }}>
+            {selectedLayout.name} · {FD_SHORT[selectedLayout.fd]} · Layout #{selectedLayout.layoutNumber}
+          </p>
+        </div>
       </main>
 
-      {debugInfo.length > 0 && (
-        <div style={{
-          marginTop: 8, padding: 10, background: '#111', borderRadius: 8,
-          fontSize: 11, fontFamily: 'monospace', color: '#0f0', lineHeight: 1.6,
-          wordBreak: 'break-all'
-        }}>
-          {debugInfo.map((line, i) => <div key={i}>{line}</div>)}
-        </div>
-      )}
-
       <footer className="app-footer">
-        <p>WTC 11th Edition · Terrain data from GDM 2026</p>
+        <p>WTC 11th Edition · Terrain data from GDM 2026 · {layoutIdx + 1}/{terrainLayouts.length}</p>
       </footer>
     </div>
   );

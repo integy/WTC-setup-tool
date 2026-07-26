@@ -22,29 +22,12 @@ declare global {
 export default function App() {
   const [selectedLayout, setSelectedLayout] = useState<TerrainLayout>(terrainLayouts[0]);
   const [layoutIdx, setLayoutIdx] = useState(0);
-  const [canAR, setCanAR] = useState(false);
   const mvRef = useRef<any>(null);
 
   const handleLayoutChange = useCallback((layout: TerrainLayout, idx: number) => {
     setSelectedLayout(layout);
     setLayoutIdx(idx);
   }, []);
-
-  // Check AR support via model-viewer
-  useEffect(() => {
-    const mv = mvRef.current;
-    if (!mv) return;
-    const check = async () => {
-      try {
-        const supported = await (mv as any).canActivateAR?.();
-        setCanAR(!!supported);
-      } catch {
-        setCanAR(false);
-      }
-    };
-    // Small delay for model-viewer to initialize
-    setTimeout(check, 1000);
-  }, [selectedLayout]);
 
   const startAR = () => {
     const mv = mvRef.current;
@@ -84,11 +67,10 @@ export default function App() {
           }}
         />
 
-        {/* Explicit AR button */}
+        {/* Explicit AR button — always enabled, model-viewer handles fallback */}
         <button
           className="ar-start-btn"
           onClick={startAR}
-          disabled={!canAR}
         >
           📷 View in AR
         </button>

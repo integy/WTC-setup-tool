@@ -103,7 +103,3 @@ export async function startARSession(
     end: () => session.end(),
   };
 }
-
-export function isARSupported(): boolean {
-  return !!(window as any).navigator?.xr;
-}

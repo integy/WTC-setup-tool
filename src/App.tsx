@@ -1,5 +1,5 @@
-import { useState, useCallback, useRef } from 'react';
-import { startARSession, isARSupported } from './ar/ARSession';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { startARSession } from './ar/ARSession';
 import { ARSceneRenderer } from './ar/ARScene';
 import terrainLayouts from './data/terrain-layouts';
 import LayoutSelector from './components/LayoutSelector';
@@ -16,7 +16,18 @@ export default function App() {
   const arRendererRef = useRef<ARSceneRenderer | null>(null);
   const sessionRef = useRef<XRSession | null>(null);
 
-  const arSupported = isARSupported();
+  const [arSupported, setArSupported] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    // Async AR support check
+    if ('xr' in navigator) {
+      (navigator as any).xr.isSessionSupported?.('immersive-ar').then(
+        (v: boolean) => setArSupported(v)
+      ).catch(() => setArSupported(false));
+    } else {
+      setArSupported(false);
+    }
+  }, []);
 
   const handleStartAR = useCallback(async () => {
     setErrorMsg('');
@@ -132,7 +143,7 @@ export default function App() {
           onSelect={handleLayoutChange}
         />
 
-        {!arSupported && (
+        {arSupported === false && (
           <div className="warning-box">
             <p>⚠️ AR not supported on this device/browser.</p>
             <p>Open this page in <strong>Safari on iPhone/iPad</strong> to use AR.</p>
@@ -142,12 +153,12 @@ export default function App() {
         <button
           className="ar-start-btn"
           onClick={handleStartAR}
-          disabled={!arSupported}
+          disabled={arSupported !== true}
         >
-          {arSupported ? '📷 Start AR' : 'AR Not Available'}
+          {arSupported === null ? 'Checking AR...' : arSupported ? '📷 Start AR' : 'AR Not Available'}
         </button>
 
-        {arSupported && (
+        {arSupported === true && (
           <p className="hint">
             Opens your camera. Point at a table, then tap to place the terrain layout.
           </p>

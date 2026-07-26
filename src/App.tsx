@@ -48,6 +48,13 @@ export default function App() {
           )}
         </p>
 
+        {/* Debug: test solid color plane */}
+        <div style={{ marginTop: 4, textAlign: 'center' }}>
+          <a href="usdz/_test_red.usdz" rel="ar" style={{ fontSize: 12, color: '#FFDE00' }}>
+            🔴 Test: solid red plane
+          </a>
+        </div>
+
         {/* Layout preview image */}
         <div style={{ textAlign: 'center', marginTop: 8 }}>
           <img

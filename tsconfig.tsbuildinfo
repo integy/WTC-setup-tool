@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/types.ts","./src/ar/arscene.ts","./src/ar/arsession.ts","./src/components/arcontrols.tsx","./src/components/layoutselector.tsx","./src/data/terrain-layouts.ts"],"errors":true,"version":"5.6.3"}

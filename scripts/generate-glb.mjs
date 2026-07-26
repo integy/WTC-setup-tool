@@ -21,10 +21,10 @@ async function generateGLB(pngPath, glbPath, imgW, imgH) {
 
   // Vertices: pos(3) + uv(2) = 5 floats × 4 bytes × 4 verts = 80
   const verts = new Float32Array([
-    -HW, 0.01, -HD,  0, 0,
-     HW, 0.01, -HD,  1, 0,
-     HW, 0.01,  HD,  1, 1,
-    -HW, 0.01,  HD,  0, 1,
+    -HW, 0.05, -HD,  0, 0,
+     HW, 0.05, -HD,  1, 0,
+     HW, 0.05,  HD,  1, 1,
+    -HW, 0.05,  HD,  0, 1,
   ]);
   // Indices: 6 × uint16 = 12 bytes
   const idx = new Uint16Array([0, 1, 2, 0, 2, 3]);
@@ -67,8 +67,9 @@ async function generateGLB(pngPath, glbPath, imgW, imgH) {
       pbrMetallicRoughness: {
         baseColorTexture: { index: 0 },
         metallicFactor: 0,
-        roughnessFactor: 1,
+        roughnessFactor: 0.5,
       },
+      emissiveFactor: [0.1, 0.1, 0.1],
       doubleSided: true,
       alphaMode: 'OPAQUE',
     }],

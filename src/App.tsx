@@ -18,13 +18,32 @@ export default function App() {
 
   const [arSupported, setArSupported] = useState<boolean | null>(null);
 
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
+
   useEffect(() => {
-    // Async AR support check
+    const info: string[] = [];
+    info.push(`navigator.xr: ${!!(navigator as any).xr}`);
+    info.push(`isSecureContext: ${window.isSecureContext}`);
+
     if ('xr' in navigator) {
-      (navigator as any).xr.isSessionSupported?.('immersive-ar').then(
-        (v: boolean) => setArSupported(v)
-      ).catch(() => setArSupported(false));
+      const xr = (navigator as any).xr;
+      info.push(`xr.isSessionSupported: ${typeof xr.isSessionSupported}`);
+      info.push(`userAgent: ${navigator.userAgent.substring(0, 80)}`);
+      
+      xr.isSessionSupported?.('immersive-ar').then(
+        (v: boolean) => {
+          info.push(`isSessionSupported result: ${v}`);
+          setDebugInfo(info);
+          setArSupported(v);
+        }
+      ).catch((e: any) => {
+        info.push(`isSessionSupported ERROR: ${e.message || e}`);
+        setDebugInfo(info);
+        setArSupported(false);
+      });
     } else {
+      info.push('navigator.xr NOT FOUND');
+      setDebugInfo(info);
       setArSupported(false);
     }
   }, []);
@@ -164,6 +183,16 @@ export default function App() {
           </p>
         )}
       </main>
+
+      {debugInfo.length > 0 && (
+        <div style={{
+          marginTop: 8, padding: 10, background: '#111', borderRadius: 8,
+          fontSize: 11, fontFamily: 'monospace', color: '#0f0', lineHeight: 1.6,
+          wordBreak: 'break-all'
+        }}>
+          {debugInfo.map((line, i) => <div key={i}>{line}</div>)}
+        </div>
+      )}
 
       <footer className="app-footer">
         <p>WTC 11th Edition · Terrain data from GDM 2026</p>

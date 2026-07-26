@@ -1,6 +1,3 @@
-
-
-
 /**
  * Creates and manages an immersive-ar WebXR session using three.js.
  */
@@ -108,5 +105,5 @@ export async function startARSession(
 }
 
 export function isARSupported(): boolean {
-  return !!(navigator.xr && typeof (navigator.xr as any).isSessionSupported === 'function');
+  return !!(window as any).navigator?.xr;
 }

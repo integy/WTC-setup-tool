@@ -8,6 +8,7 @@ export interface TerrainLayout {
   layoutNumber: number;
   imagePath: string;
   usdzPath: string;
+  glbPath: string;
 }
 
 export type ForceDisposition =

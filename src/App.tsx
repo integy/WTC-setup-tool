@@ -3,7 +3,30 @@ import terrainLayouts from './data/terrain-layouts';
 import LayoutSelector from './components/LayoutSelector';
 import type { TerrainLayout } from './types';
 import { FD_SHORT } from './types';
-import type { ForceDisposition } from './types';
+
+// Type declaration for model-viewer web component
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'model-viewer': React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & {
+          src?: string;
+          alt?: string;
+          ar?: string;
+          'ar-modes'?: string;
+          'camera-controls'?: string;
+          'touch-action'?: string;
+          poster?: string;
+          'shadow-intensity'?: string;
+          'environment-image'?: string;
+          exposure?: string;
+          style?: React.CSSProperties;
+        },
+        HTMLElement
+      >;
+    }
+  }
+}
 
 export default function App() {
   const [selectedLayout, setSelectedLayout] = useState<TerrainLayout>(terrainLayouts[0]);
@@ -13,8 +36,6 @@ export default function App() {
     setSelectedLayout(layout);
     setLayoutIdx(idx);
   }, []);
-
-  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 
   return (
     <div className="app">
@@ -30,47 +51,31 @@ export default function App() {
           onSelect={handleLayoutChange}
         />
 
-        {/* AR Quick Look button for iOS */}
-        <a
-          href={selectedLayout.usdzPath}
-          rel="ar"
-          className="ar-start-btn"
-          style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}
-        >
-          📷 View in AR
-        </a>
+        {/* 3D preview with model-viewer */}
+        <model-viewer
+          src={selectedLayout.glbPath}
+          alt={selectedLayout.name}
+          ar
+          ar-modes="webxr scene-viewer quick-look"
+          camera-controls
+          touch-action="pan-y"
+          poster={selectedLayout.imagePath}
+          shadow-intensity="0"
+          exposure="1"
+          style={{
+            width: '100%',
+            height: 280,
+            borderRadius: 8,
+            background: '#0f0f1a',
+            border: '2px solid #333',
+          }}
+        />
 
         <p style={{ textAlign: 'center', fontSize: 12, color: '#888', lineHeight: 1.5 }}>
-          {isIOS ? (
-            <>Opens <strong>AR Quick Look</strong> — place the terrain board in your real space.</>
-          ) : (
-            <>Best experienced on <strong>iPhone/iPad Safari</strong> with AR Quick Look.</>
-          )}
+          {selectedLayout.name} · {FD_SHORT[selectedLayout.fd]} · Layout #{selectedLayout.layoutNumber}
+          <br />
+          Tap the <strong>AR icon</strong> (cube) in the 3D viewer to place on your table.
         </p>
-
-        {/* Debug: test solid color plane */}
-        <div style={{ marginTop: 4, textAlign: 'center' }}>
-          <a href="usdz/_test_red.usdz" rel="ar" style={{ fontSize: 12, color: '#FFDE00' }}>
-            🔴 Test: solid red plane
-          </a>
-        </div>
-
-        {/* Layout preview image */}
-        <div style={{ textAlign: 'center', marginTop: 8 }}>
-          <img
-            src={selectedLayout.imagePath}
-            alt={selectedLayout.name}
-            style={{
-              maxWidth: '100%',
-              maxHeight: 300,
-              borderRadius: 8,
-              border: '2px solid #333',
-            }}
-          />
-          <p style={{ fontSize: 11, color: '#666', marginTop: 4 }}>
-            {selectedLayout.name} · {FD_SHORT[selectedLayout.fd]} · Layout #{selectedLayout.layoutNumber}
-          </p>
-        </div>
       </main>
 
       <footer className="app-footer">

@@ -1,15 +1,6 @@
 import type { TerrainLayout } from '../types';
 
-/**
- * WTC 11th Edition terrain layouts sourced from GDM (gdmissions.app).
- * Images are PNG renders of the official terrain maps with measurements.
- * Board dimensions: 60" × 44"
- * Each layout has a USDZ for AR Quick Look on iOS.
- */
-
-function entry(
-  id: string, fd: TerrainLayout['fd'], num: number, base: string
-): TerrainLayout {
+function entry(id: string, fd: TerrainLayout['fd'], num: number, base: string): TerrainLayout {
   const nameMap: Record<string, string> = {
     'take-and-hold': 'Take and Hold',
     'purge-the-foe': 'Purge the Foe',
@@ -24,6 +15,7 @@ function entry(
     layoutNumber: num,
     imagePath: `layouts/${base}.png`,
     usdzPath: `usdz/${base}.usdz`,
+    glbPath: `glb/${base}.glb`,
   };
 }
 

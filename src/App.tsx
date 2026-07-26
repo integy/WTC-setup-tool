@@ -78,6 +78,13 @@ export default function App() {
         <p style={{ textAlign: 'center', fontSize: 12, color: '#888', lineHeight: 1.5 }}>
           {selectedLayout.name} · {FD_SHORT[selectedLayout.fd]} · #{selectedLayout.layoutNumber}
         </p>
+
+        <div style={{ textAlign: 'center', marginTop: 8 }}>
+          <a href="glb/_test_red_box.glb" rel="ar" 
+            style={{ color: '#FFDE00', fontSize: 12, textDecoration: 'underline' }}>
+            🔴 Test: Solid Red Box (AR Quick Look)
+          </a>
+        </div>
       </main>
 
       <footer className="app-footer">

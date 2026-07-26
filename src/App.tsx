@@ -8,6 +8,14 @@ import type { TerrainLayout } from './types';
 
 type AppState = 'landing' | 'ar-active' | 'error';
 
+function getDebugInfo(): string[] {
+  const info: string[] = [];
+  info.push(`navigator.xr: ${!!(navigator as any).xr}`);
+  info.push(`isSecureContext: ${window.isSecureContext}`);
+  info.push(`userAgent: ${navigator.userAgent.substring(0, 90)}`);
+  return info;
+}
+
 export default function App() {
   const [appState, setAppState] = useState<AppState>('landing');
   const [selectedLayout, setSelectedLayout] = useState<TerrainLayout>(terrainLayouts[0]);
@@ -16,37 +24,7 @@ export default function App() {
   const arRendererRef = useRef<ARSceneRenderer | null>(null);
   const sessionRef = useRef<XRSession | null>(null);
 
-  const [arSupported, setArSupported] = useState<boolean | null>(null);
-
-  const [debugInfo, setDebugInfo] = useState<string[]>([]);
-
-  useEffect(() => {
-    const info: string[] = [];
-    info.push(`navigator.xr: ${!!(navigator as any).xr}`);
-    info.push(`isSecureContext: ${window.isSecureContext}`);
-
-    if ('xr' in navigator) {
-      const xr = (navigator as any).xr;
-      info.push(`xr.isSessionSupported: ${typeof xr.isSessionSupported}`);
-      info.push(`userAgent: ${navigator.userAgent.substring(0, 80)}`);
-      
-      xr.isSessionSupported?.('immersive-ar').then(
-        (v: boolean) => {
-          info.push(`isSessionSupported result: ${v}`);
-          setDebugInfo(info);
-          setArSupported(v);
-        }
-      ).catch((e: any) => {
-        info.push(`isSessionSupported ERROR: ${e.message || e}`);
-        setDebugInfo(info);
-        setArSupported(false);
-      });
-    } else {
-      info.push('navigator.xr NOT FOUND');
-      setDebugInfo(info);
-      setArSupported(false);
-    }
-  }, []);
+  const [debugInfo] = useState<string[]>(getDebugInfo);
 
   const handleStartAR = useCallback(async () => {
     setErrorMsg('');
@@ -162,26 +140,18 @@ export default function App() {
           onSelect={handleLayoutChange}
         />
 
-        {arSupported === false && (
-          <div className="warning-box">
-            <p>⚠️ AR not supported on this device/browser.</p>
-            <p>Open this page in <strong>Safari on iPhone/iPad</strong> to use AR.</p>
-          </div>
-        )}
-
         <button
           className="ar-start-btn"
           onClick={handleStartAR}
-          disabled={arSupported !== true}
         >
-          {arSupported === null ? 'Checking AR...' : arSupported ? '📷 Start AR' : 'AR Not Available'}
+          📷 Start AR
         </button>
 
-        {arSupported === true && (
-          <p className="hint">
-            Opens your camera. Point at a table, then tap to place the terrain layout.
-          </p>
-        )}
+        <p style={{ textAlign: 'center', fontSize: 12, color: '#888', lineHeight: 1.5 }}>
+          Requires <strong>Safari on iPhone/iPad</strong>.<br />
+          Make sure <strong>WebXR</strong> is enabled in:<br />
+          Settings → Safari → Advanced → Feature Flags → WebXR
+        </p>
       </main>
 
       {debugInfo.length > 0 && (

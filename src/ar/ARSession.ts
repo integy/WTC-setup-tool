@@ -19,7 +19,10 @@ export async function startARSession(
   options: ARSessionOptions = {}
 ): Promise<ARSessionHandle> {
   if (!navigator.xr) {
-    throw new Error('WebXR not supported on this device');
+    throw new Error(
+      'WebXR not available. Please enable it in:\n' +
+      'Settings → Safari → Advanced → Feature Flags → WebXR'
+    );
   }
 
   const supported = await navigator.xr.isSessionSupported('immersive-ar');

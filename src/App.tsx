@@ -56,7 +56,7 @@ export default function App() {
           src={selectedLayout.glbPath}
           alt={selectedLayout.name}
           ar
-          ar-modes="quick-look webxr scene-viewer"
+          ar-modes="quick-look"
           camera-controls
           touch-action="pan-y"
           poster={selectedLayout.imagePath}

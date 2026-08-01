@@ -9,11 +9,9 @@ declare global {
     interface IntrinsicElements {
       'model-viewer': React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement> & {
-          src?: string; alt?: string; ar?: string; 'ar-modes'?: string;
-          'camera-controls'?: string; 'touch-action'?: string;
-          poster?: string; 'shadow-intensity'?: string;
-          'environment-image'?: string; exposure?: string;
-          style?: React.CSSProperties; ref?: React.Ref<any>;
+          src?: string; alt?: string; 'camera-controls'?: string;
+          'touch-action'?: string; poster?: string; 'shadow-intensity'?: string;
+          style?: React.CSSProperties;
         }, HTMLElement>;
     }
   }
@@ -56,26 +54,15 @@ export default function App() {
           }}
         />
 
-        {/* AR Quick Look — direct USDZ link (most reliable on iOS) */}
-        <a
-          href={selectedLayout.usdzPath}
-          rel="ar"
-          className="ar-start-btn"
-          style={{ display: 'block', textDecoration: 'none' }}
-        >
+        {/* AR Quick Look — direct USDZ link */}
+        <a href={selectedLayout.usdzPath} rel="ar" className="ar-start-btn"
+          style={{ display: 'block', textDecoration: 'none' }}>
           📷 View in AR
         </a>
 
         <p style={{ textAlign: 'center', fontSize: 12, color: '#888', lineHeight: 1.5 }}>
           {selectedLayout.name} · {FD_SHORT[selectedLayout.fd]} · #{selectedLayout.layoutNumber}
         </p>
-
-        <div style={{ textAlign: 'center', marginTop: 8 }}>
-          <a href="usdz/test-red.usdz" rel="ar"
-            style={{ color: '#FFDE00', fontSize: 12, textDecoration: 'underline' }}>
-            🔴 Test: Solid Red Box (AR Quick Look)
-          </a>
-        </div>
       </main>
 
       <footer className="app-footer">

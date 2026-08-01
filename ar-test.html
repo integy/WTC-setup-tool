@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>AR Test</title>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  <style>
+    body { margin: 0; padding: 16px; background: #0a0a1a; color: #fff; font-family: system-ui; }
+    h1 { font-size: 18px; text-align: center; }
+    model-viewer { width: 100%; height: 200px; background: #111; border-radius: 8px; margin: 8px 0; }
+    button { display: block; width: 100%; padding: 12px; margin: 8px 0; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .apple { background: #007AFF; color: #fff; }
+    .red { background: #c0392b; color: #fff; }
+    .terrain { background: #27ae60; color: #fff; }
+    .note { font-size: 11px; color: #888; text-align: center; margin: 16px 0; }
+  </style>
+</head>
+<body>
+  <h1>🧪 AR Quick Look Test Page</h1>
+
+  <!-- Apple sample - known working -->
+  <p style="font-size:13px;color:#aaa;margin:16px 0 4px 0">🍰 Apple official sample (should work):</p>
+  <model-viewer id="cupcake" src="usdz/cupcake.usdz" ar ar-modes="quick-look" camera-controls></model-viewer>
+  <button class="apple" onclick="document.getElementById('cupcake').activateAR()">🍰 View Cupcake in AR</button>
+
+  <!-- Our red box GLB -->
+  <p style="font-size:13px;color:#aaa;margin:16px 0 4px 0">🔴 Our red box (GLB):</p>
+  <model-viewer id="redbox" src="glb/test-red-box.glb" ar ar-modes="quick-look" camera-controls></model-viewer>
+  <button class="red" onclick="document.getElementById('redbox').activateAR()">🔴 View Red Box in AR</button>
+
+  <!-- Our terrain GLB -->
+  <p style="font-size:13px;color:#aaa;margin:16px 0 4px 0">🗺️ Terrain layout (GLB):</p>
+  <model-viewer id="terrain" src="glb/disruption-mirror-1.glb" ar ar-modes="quick-look" camera-controls></model-viewer>
+  <button class="terrain" onclick="document.getElementById('terrain').activateAR()">🗺️ View Terrain in AR</button>
+
+  <p class="note">
+    Test order: try 🍰 Cupcake first → if works, AR Quick Look is fine.<br>
+    Then try 🔴 Red Box → if black, GLB is broken.<br>
+    Then try 🗺️ Terrain → isolate the issue.
+  </p>
+</body>
+</html>

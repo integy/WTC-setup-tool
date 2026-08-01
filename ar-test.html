@@ -3,26 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>AR Test v3</title>
+  <title>AR Debug</title>
   <style>
-    body { margin: 0; padding: 20px; background: #0a0a1a; color: #fff; font-family: system-ui; }
-    h1 { font-size: 18px; text-align: center; margin-bottom: 8px; }
-    a.ar-btn { display: block; width: 100%; padding: 15px; margin: 8px 0; border-radius: 10px;
-      font-size: 14px; font-weight: 600; text-align: center; text-decoration: none; box-sizing: border-box; }
-    .red { background: #c0392b; color: #fff; }
-    .terrain { background: #27ae60; color: #fff; }
-    .note { font-size: 11px; color: #888; text-align: center; margin: 20px 0; line-height: 1.5; }
+    body { margin:0; padding:20px; background:#0a0a1a; color:#fff; font-family:system-ui; }
+    h1 { font-size:18px; text-align:center; }
+    a.ar-btn { display:block; width:100%; padding:14px; margin:7px 0; border-radius:8px;
+      font-size:13px; font-weight:600; text-align:center; text-decoration:none; box-sizing:border-box; }
+    .r { background:#c0392b; color:#fff; }
+    .g { background:#27ae60; color:#fff; }
+    .b { background:#2980b9; color:#fff; }
+    .t { background:#8e44ad; color:#fff; }
+    .s { font-size:12px; color:#888; margin:4px 0 14px 0; }
+    hr { border-color:#333; margin:16px 0; }
   </style>
 </head>
 <body>
-  <h1>🧪 AR Quick Look Test</h1>
-  <p style="font-size:13px;color:#aaa;text-align:center;margin:0 0 16px 0;">Pixar USD API generated</p>
+  <h1>🔬 AR Debug</h1>
 
-  <a class="ar-btn red" href="usdz/red-cube-v2.usdz" rel="ar">🔴 Red Cube</a>
-  <a class="ar-btn terrain" href="usdz/disruption-mirror-1.usdz" rel="ar">🗺️ Disruption Mirror #1</a>
-  <a class="ar-btn terrain" href="usdz/purge-the-foe-mirror-1.usdz" rel="ar">🗺️ Purge the Foe Mirror #1</a>
-  <a class="ar-btn terrain" href="usdz/take-and-hold-mirror-1.usdz" rel="ar">🗺️ Take and Hold Mirror #1</a>
+  <p class="s">Step 1: Verify planes work without texture</p>
+  <a class="ar-btn r" href="usdz/red-cube-v2.usdz" rel="ar">🔴 Red Cube (20cm — WORKS)</a>
+  <a class="ar-btn g" href="usdz/test-small-green.usdz" rel="ar">🟢 Small Green Plane (20cm)</a>
+  <a class="ar-btn g" href="usdz/test-green-plane.usdz" rel="ar">🟢 Full Green Plane (152x112cm)</a>
+  <a class="ar-btn b" href="usdz/test-blue.usdz" rel="ar">🔵 Full Blue Plane (152x112cm)</a>
 
-  <p class="note">All generated via Pixar USD Python API.<br>If red cube works, these should too.</p>
+  <hr>
+  <p class="s">Step 2: If planes work, test terrain WITH texture</p>
+  <a class="ar-btn t" href="usdz/disruption-mirror-1.usdz" rel="ar">🗺️ Terrain (with texture)</a>
+
+  <p style="font-size:11px;color:#666;text-align:center;margin-top:20px;">
+    Test order: small green → full green → terrain.<br>
+    If small green works but full green doesn't → SIZE issue.<br>
+    If full green works but terrain doesn't → TEXTURE issue.
+  </p>
 </body>
 </html>

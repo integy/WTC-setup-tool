@@ -3,48 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>AR Test v2</title>
+  <title>AR Test v3</title>
   <style>
-    body { margin: 0; padding: 16px; background: #0a0a1a; color: #fff; font-family: system-ui; }
-    h1 { font-size: 18px; text-align: center; }
-    a.ar-btn { display: block; width: 100%; padding: 14px; margin: 10px 0; border-radius: 8px;
-      font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; box-sizing: border-box; }
-    .cupcake { background: #007AFF; color: #fff; }
-    .red { background: #c0392b; color: #fff; }
-    .terrain { background: #27ae60; color: #fff; }
-    .note { font-size: 11px; color: #888; text-align: center; margin: 16px 0; }
+    body { margin: 0; padding: 20px; background: #0a0a1a; color: #fff; font-family: system-ui; }
+    h1 { font-size: 18px; text-align: center; margin-bottom: 24px; }
+    a.ar-btn { display: block; width: 100%; padding: 16px; margin: 10px 0; border-radius: 10px;
+      font-size: 15px; font-weight: 600; text-align: center; text-decoration: none; box-sizing: border-box; }
+    .a { background: #007AFF; color: #fff; }
+    .b { background: #c0392b; color: #fff; }
+    .note { font-size: 11px; color: #888; text-align: center; margin: 20px 0; line-height: 1.5; }
     hr { border-color: #333; margin: 20px 0; }
-    .section-title { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 8px 0; }
   </style>
 </head>
 <body>
-  <h1>🧪 AR Quick Look Test</h1>
+  <h1>🧪 AR Quick Look — Minimal Test</h1>
 
-  <!-- METHOD 1: Direct <a rel="ar"> links (most reliable) -->
-  <div class="section-title">Method 1: Direct USDZ links</div>
-  <a class="ar-btn cupcake" href="usdz/cupcake.usdz" rel="ar">🍰 Apple Cupcake (direct link)</a>
-  <a class="ar-btn red" href="usdz/test-red.usdz" rel="ar">🔴 Our Red Box (direct link)</a>
-  <a class="ar-btn terrain" href="usdz/disruption-mirror-1.usdz" rel="ar">🗺️ Our Terrain (direct link)</a>
+  <p style="font-size:13px;color:#aaa;text-align:center;">Tap each link. "object cannot be opened" = format issue.</p>
 
-  <hr>
-
-  <!-- METHOD 2: model-viewer -->
-  <div class="section-title">Method 2: model-viewer</div>
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-  
-  <model-viewer id="cupcake-mv" src="usdz/cupcake.usdz" ar ar-modes="quick-look" camera-controls
-    style="width:100%;height:160px;background:#111;border-radius:8px;margin:4px 0;"></model-viewer>
-  <button class="cupcake" style="border:none;width:100%;" onclick="document.getElementById('cupcake-mv').activateAR()">🍰 Cupcake (model-viewer)</button>
-
-  <model-viewer id="red-mv" src="glb/test-red-box.glb" ar ar-modes="quick-look" camera-controls
-    style="width:100%;height:160px;background:#111;border-radius:8px;margin:4px 0;"></model-viewer>
-  <button class="red" style="border:none;width:100%;" onclick="document.getElementById('red-mv').activateAR()">🔴 Red Box (model-viewer)</button>
+  <a class="ar-btn b" href="usdz/red-cube-v2.usdz" rel="ar">
+    🔴 Pixar API Red Cube (v2)
+  </a>
 
   <p class="note">
-    <b>Test Method 1 first</b> (direct links are most reliable).<br>
-    If cupcake works but ours don't → our USDZ is broken.<br>
-    If cupcake also fails → device/iOS issue.<br>
-    Then try Method 2 to test model-viewer.
+    This USDZ was generated with the <b>Pixar USD Python API</b> —<br>
+    the same library used by professional 3D tools.<br>
+    If this doesn't work, nothing we generate will.
   </p>
 </body>
 </html>

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import terrainLayouts from './data/terrain-layouts';
 import LayoutSelector from './components/LayoutSelector';
 import type { TerrainLayout } from './types';
@@ -22,19 +22,11 @@ declare global {
 export default function App() {
   const [selectedLayout, setSelectedLayout] = useState<TerrainLayout>(terrainLayouts[0]);
   const [layoutIdx, setLayoutIdx] = useState(0);
-  const mvRef = useRef<any>(null);
 
   const handleLayoutChange = useCallback((layout: TerrainLayout, idx: number) => {
     setSelectedLayout(layout);
     setLayoutIdx(idx);
   }, []);
-
-  const startAR = () => {
-    const mv = mvRef.current;
-    if (mv && (mv as any).activateAR) {
-      (mv as any).activateAR();
-    }
-  };
 
   return (
     <div className="app">
@@ -52,11 +44,8 @@ export default function App() {
 
         {/* 3D preview */}
         <model-viewer
-          ref={mvRef}
           src={selectedLayout.glbPath}
           alt={selectedLayout.name}
-          ar
-          ar-modes="quick-look"
           camera-controls
           touch-action="pan-y"
           poster={selectedLayout.imagePath}
@@ -67,20 +56,22 @@ export default function App() {
           }}
         />
 
-        {/* Explicit AR button — always enabled, model-viewer handles fallback */}
-        <button
+        {/* AR Quick Look — direct USDZ link (most reliable on iOS) */}
+        <a
+          href={selectedLayout.usdzPath}
+          rel="ar"
           className="ar-start-btn"
-          onClick={startAR}
+          style={{ display: 'block', textDecoration: 'none' }}
         >
           📷 View in AR
-        </button>
+        </a>
 
         <p style={{ textAlign: 'center', fontSize: 12, color: '#888', lineHeight: 1.5 }}>
           {selectedLayout.name} · {FD_SHORT[selectedLayout.fd]} · #{selectedLayout.layoutNumber}
         </p>
 
         <div style={{ textAlign: 'center', marginTop: 8 }}>
-          <a href="glb/_test_red_box.glb" rel="ar" 
+          <a href="usdz/test-red.usdz" rel="ar"
             style={{ color: '#FFDE00', fontSize: 12, textDecoration: 'underline' }}>
             🔴 Test: Solid Red Box (AR Quick Look)
           </a>
